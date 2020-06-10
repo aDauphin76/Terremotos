@@ -19,8 +19,10 @@ public class MainActivity extends AppCompatActivity {
 
         List<Terremoto> listaTerremoto = new ArrayList<>();
 
-        listaTerremoto.add(new Terremoto("8.6","San Francisco","Feb 2 2020"));
-        listaTerremoto.add(new Terremoto("7.5","Los Angeles","Ene 13 2020"));
+        //listaTerremoto.add(new Terremoto("8.6","San Francisco","Feb 2 2020"));
+        //listaTerremoto.add(new Terremoto("7.5","Los Angeles","Ene 13 2020"));
+
+        listaTerremoto = QueryUtils.extractTerremotos();
 
         TerremotoAdapter adaptadorDeTerremoto = new TerremotoAdapter(getApplicationContext(),listaTerremoto);
 
