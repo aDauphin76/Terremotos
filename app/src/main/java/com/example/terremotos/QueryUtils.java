@@ -1,19 +1,28 @@
 package com.example.terremotos;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.util.Log;
+import android.widget.ProgressBar;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.logging.Filter;
+import java.util.Date;
 
 public class QueryUtils {
 
-    private static final String KEY_MAGNITUD    = "mag" ;
-    private static final String KEY_LUGAR       = "place" ;
-    private static final String KEY_HORA        = "time" ;
+    private static final String KEY_MAGNITUD    = "mag";
+    private static final String KEY_LUGAR       = "place";
+    private static final String KEY_HORA        = "time";
 
     /** Ejemplo de un JSON */
     private static final String SAMPLE_JSON_RESPONSE = "{\"type\":\"FeatureCollection\",\"metadata\":{\"generated\":1462295443000,\"url\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-01-01&endtime=2016-01-31&minmag=6&limit=10\",\"title\":\"USGS Earthquakes\",\"status\":200,\"api\":\"1.5.2\",\"limit\":10,\"offset\":1,\"count\":10},\"features\":[{\"type\":\"Feature\",\"properties\":{\"mag\":7.2,\"place\":\"88km N of Yelizovo, Russia\",\"time\":1454124312220,\"updated\":1460674294040,\"tz\":720,\"url\":\"http://earthquake.usgs.gov/earthquakes/eventpage/us20004vvx\",\"detail\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us20004vvx&format=geojson\",\"felt\":2,\"cdi\":3.4,\"mmi\":5.82,\"alert\":\"green\",\"status\":\"reviewed\",\"tsunami\":1,\"sig\":798,\"net\":\"us\",\"code\":\"20004vvx\",\"ids\":\",at00o1qxho,pt16030050,us20004vvx,gcmt20160130032510,\",\"sources\":\",at,pt,us,gcmt,\",\"types\":\",cap,dyfi,finite-fault,general-link,general-text,geoserve,impact-link,impact-text,losspager,moment-tensor,nearby-cities,origin,phase-data,shakemap,tectonic-summary,\",\"nst\":null,\"dmin\":0.958,\"rms\":1.19,\"gap\":17,\"magType\":\"mww\",\"type\":\"earthquake\",\"title\":\"M 7.2 - 88km N of Yelizovo, Russia\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[158.5463,53.9776,177]},\"id\":\"us20004vvx\"},\n" +
@@ -31,41 +40,41 @@ public class QueryUtils {
      * Armo solo un constructor privado porque no quiero que nadie cree una instancia de esta clase,
      * es solo para ser llamada como un convertor.
      */
+
     private QueryUtils() {
     }
 
     /**
      * Devuelvo una lista de {@link Terremoto} que son generados a partir de un JSON
+     * @param response
      */
-    public static ArrayList<Terremoto> extractTerremotos() {
+    public static ArrayList<Terremoto> extractTerremotos(JSONObject response) {
 
         // Empiezo con una lista auxiliar vacia
         ArrayList<Terremoto> earthquakes = new ArrayList<>();
-
-        Log.i("Entro","Entro");
 
         // Try (intento) parcear el JSON de ejemplo, si hay algun problema
         // en el parsear tengo que generar un error y devolver un estado del sistema en ese momento.
 
         try {
 
-
             // TODO: Parsear el JSON de ejemplo provisto para devolver una lista de terremotos
-            JSONObject terremotoJson = new JSONObject(SAMPLE_JSON_RESPONSE);
-            JSONArray terremotoArray = terremotoJson.getJSONArray("features");
+            //JSONObject terremotoJson = new JSONObject(SAMPLE_JSON_RESPONSE);
+            // JSONArray terremotoArray = terremotoJson.getJSONArray("features");
+            JSONArray terremotoArray = response.getJSONArray("features");
 
-            for (int i = 0 ; i <= terremotoArray.length(); i++){
+            for (int i = 0 ; i < terremotoArray.length(); i++){
 
                 JSONObject propiedadesItem = terremotoArray.getJSONObject(i);
                 JSONObject terremotoItem = propiedadesItem.getJSONObject("properties");
-
 
                 String magnitud = Float.toString(terremotoItem.getInt(KEY_MAGNITUD));
                 String lugar    = terremotoItem.getString(KEY_LUGAR);
                 long horaLong   = terremotoItem.getLong(KEY_HORA);
 
-                String hora = new java.text.SimpleDateFormat("MMM dd yyyy").
-                        format(new java.util.Date (horaLong));
+                String hora = new SimpleDateFormat("MMM dd yyyy").
+                        format(new Date (horaLong));
+
 
                 earthquakes.add(new Terremoto(magnitud,lugar,hora));
             }
