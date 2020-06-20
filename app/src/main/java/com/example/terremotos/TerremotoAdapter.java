@@ -35,9 +35,11 @@ public class TerremotoAdapter extends ArrayAdapter<Terremoto> {
         TextView tvLugar    = ItemLista.findViewById(R.id.tvLugar);
         TextView tvHora     = ItemLista.findViewById(R.id.tvHora);
 
-        tvManitud.setText(itemActual.getMagnitud());
-        tvLugar.setText(itemActual.getLugar());
-        tvHora.setText(itemActual.getHora());
+        if (itemActual != null) {
+            tvManitud.setText(itemActual.getMagnitud());
+            tvLugar.setText(itemActual.getLugar());
+            tvHora.setText(itemActual.getHora());
+        }
 
         return ItemLista;
     }

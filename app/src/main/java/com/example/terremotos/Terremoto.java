@@ -15,24 +15,15 @@ public class Terremoto {
         return magnitud;
     }
 
-    public void setMagnitud(String magnitud) {
-        this.magnitud = magnitud;
-    }
 
     public String getLugar() {
         return lugar;
     }
 
-    public void setLugar(String lugar) {
-        this.lugar = lugar;
-    }
 
     public String getHora() {
         return hora;
     }
 
-    public void setHora(String hora) {
-        this.hora = hora;
-    }
 }
 
