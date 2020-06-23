@@ -2,37 +2,77 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    >
+
+    <TextView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/circulo_magnitud"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:textSize="16sp"
+        tools:text="8.2"
+        android:id="@+id/tvMagnitud"
+        />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <TextView
             style="@style/ItemListaStyle"
-            tools:text="8.5"
-            android:id="@+id/tvMagnitud"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAllCaps="true"
+            tools:text="2KM"
+            android:id="@+id/tvDistancia"
             />
+
         <TextView
             style="@style/ItemListaStyle"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/colorTextoLugarTerremoto"
+            android:textSize="16sp"
             tools:text="San Francisco"
-            android:layout_width="180dp"
             android:id="@+id/tvLugar"
             />
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/ItemListaStyle"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        >
         <TextView
             style="@style/ItemListaStyle"
+            android:layout_gravity="end"
             tools:text="Feb 2 2016"
+            android:id="@+id/tvFecha"
+            />
+
+        <TextView
+            style="@style/ItemListaStyle"
+            android:layout_gravity="end"
+            tools:text="2:30 PM"
             android:id="@+id/tvHora"
             />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimary"
-        />
-
 </LinearLayout>
+

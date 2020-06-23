@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Terremotos</string>
+    <string name="cerca_de">Cerca De</string>
 </resources>

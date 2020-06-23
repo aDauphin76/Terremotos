@@ -2,7 +2,11 @@ package com.example.terremotos;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -32,9 +36,10 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
 
         lvTerremoto = findViewById(R.id.lvTerremoto);
 
-
-        //listaTerremoto.add(new Terremoto("8.6","San Francisco","Feb 2 2020"));
-        //listaTerremoto.add(new Terremoto("7.5","Los Angeles","Ene 13 2020"));
+/*
+        listaTerremoto.add(new Terremoto("8.6","San Francisco","Feb 2 2020"));
+        listaTerremoto.add(new Terremoto("7.5","Los Angeles","Ene 13 2020"));
+*/
 
         request = Volley.newRequestQueue(getApplicationContext());
 
@@ -58,6 +63,16 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
 
         TerremotoAdapter adaptadorDeTerremoto = new TerremotoAdapter(getApplicationContext(),listaTerremoto);
         lvTerremoto.setAdapter(adaptadorDeTerremoto);
+
+        lvTerremoto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String url= listaTerremoto.get(position).getUrl();
+                Uri uri = Uri.parse(url);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
 
     }
 

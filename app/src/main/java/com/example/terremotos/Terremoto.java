@@ -1,29 +1,26 @@
 package com.example.terremotos;
 
 public class Terremoto {
-    private String magnitud;
+    private double magnitud;
     private String lugar;
-    private String hora;
+    private long hora;
+    private String url;
 
-    public Terremoto(String magnitud, String lugar, String hora) {
-        this.magnitud = magnitud;
-        this.lugar = lugar;
-        this.hora = hora;
+    public Terremoto(double magnitud, String lugar, long hora, String url) {
+        this.magnitud   = magnitud;
+        this.lugar      = lugar;
+        this.hora       = hora;
+        this.url        = url;
     }
 
-    public String getMagnitud() {
-        return magnitud;
-    }
-
+    public double getMagnitud() { return magnitud; }
 
     public String getLugar() {
         return lugar;
     }
 
+    public long getHora() { return hora; }
 
-    public String getHora() {
-        return hora;
-    }
-
+    public String getUrl() { return url; }
 }
 
