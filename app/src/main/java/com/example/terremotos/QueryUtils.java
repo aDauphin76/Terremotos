@@ -1,15 +1,26 @@
 package com.example.terremotos;
 
+import android.os.Build;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 public class QueryUtils {
 
+    public static final String LOG_CAT = QueryUtils.class.getSimpleName();
     private static final String KEY_MAGNITUD    = "mag";
     private static final String KEY_LUGAR       = "place";
     private static final String KEY_HORA        = "time";
@@ -35,9 +46,11 @@ public class QueryUtils {
     private QueryUtils() {
     }
 
+
     /**
      * Devuelvo una lista de {@link Terremoto} que son generados a partir de un JSON
      */
+
     public static ArrayList<Terremoto> extractTerremotos(JSONObject response) {
 
         // Empiezo con una lista auxiliar vacia
@@ -77,4 +90,137 @@ public class QueryUtils {
         return earthquakes;
     }
 
+    public static List<Terremoto> traerDataDeTerremotos (String requestURL) {
+        URL url = crearURL(requestURL);
+
+        String jsonResponse = null;
+        try {
+            jsonResponse = hacerRequestHTTP(url);
+        } catch (IOException e) {
+            Log.e(LOG_CAT,"Error creando Stream", e);
+        }
+        // agarrar esa respuesta y extraer informacion
+        List<Terremoto> terremotos = extraigoJson(jsonResponse);
+
+        return terremotos;
+
+    }
+
+    private static URL crearURL(String requestUrl) {
+        URL mUrl = null;
+        try {
+            mUrl = new URL(requestUrl);
+        } catch (MalformedURLException e) {
+            Log.e(LOG_CAT,"Error Creando una URL ",e);
+        }
+        return mUrl;
+    }
+
+    private static List<Terremoto> extraigoJson(String jsonTerremoto) {
+
+        if (jsonTerremoto.isEmpty()) {
+            return null;
+        }
+
+        List<Terremoto> terremotos = new ArrayList<>();
+        try {
+            JSONObject jsonObject = new JSONObject(jsonTerremoto);
+            JSONArray featuresArray = jsonObject.getJSONArray("features");
+            for (int i=0; i < featuresArray.length(); i++) {
+                JSONObject eventoActual = featuresArray.getJSONObject(i);
+                JSONObject propiedaes = eventoActual.getJSONObject("properties");
+
+                double magnitud = propiedaes.getDouble(KEY_MAGNITUD);
+                String lugar    = propiedaes.getString(KEY_LUGAR);
+                long hora       = propiedaes.getLong(KEY_HORA);
+                String url      = propiedaes.getString(KEY_URL);
+
+                terremotos.add( new Terremoto(magnitud, lugar, hora,url));
+            }
+
+        } catch (JSONException e) {
+            Log.e(LOG_CAT, "Problemas parseando el JSON", e);
+        }
+
+        return terremotos;
+    }
+
+    private static String hacerRequestHTTP(URL url) throws IOException {
+        String mJsonResponse = "";
+        InputStream inputStream = null;
+        HttpURLConnection urlConnection = null;
+
+        if (url == null){
+            return mJsonResponse;
+        }
+
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(15000);
+            urlConnection.setReadTimeout(10000);
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            if (urlConnection.getResponseCode() == 200 ) {
+                // tomar la respuesta devolver un JSON Response
+
+                inputStream = urlConnection.getInputStream();
+                mJsonResponse = leerDeStream(inputStream);
+
+
+            }else {
+                Log.e(LOG_CAT," Codigo de error HTTP : "+urlConnection.getResponseCode());
+            }
+        } catch (IOException e) {
+            Log.e(LOG_CAT,"Problemas de coneccion o de parseo de JSON", e);
+        }finally {
+            if (urlConnection != null){
+                urlConnection.disconnect();
+            }
+            if (inputStream != null){
+                inputStream.close();
+            }
+            Log.v(LOG_CAT,"Finalizados Streams y Conecciones");
+        }
+
+        return mJsonResponse;
+    }
+    private static String leerDeStream(InputStream inputStream) throws IOException{
+        StringBuilder output = new StringBuilder();
+        if (inputStream != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                InputStreamReader inputReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                BufferedReader bufferedReader = new BufferedReader(inputReader);
+
+                output.append(agregaLinea(bufferedReader));
+/*
+                String line = bufferedReader.readLine();
+                while (line != null) {
+                    output.append(line);
+                    line = bufferedReader.readLine();
+                }
+*/
+            }
+
+        }
+        return output.toString();
+
+    }
+
+    private static String agregaLinea(BufferedReader mbufferedReader) {
+
+        String line = null;
+        try {
+            line = mbufferedReader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (line == null){
+            return "";
+        }
+
+        return line+agregaLinea(mbufferedReader);
+    }
+
 }
+

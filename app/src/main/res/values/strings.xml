@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Terremotos</string>
     <string name="cerca_de">Cerca De</string>
+    <string name="no_encontrado">No se encontraron Terremotos</string>
+    <string name="ordenado_por">Ordenado Por:</string>
+    <string name="magnitud_minima">Magnitud Minima:</string>
+    <string name="magnitud">Magnitud</string>
+    <string name="mas_recientes">Mas Recientes</string>
+    <string name="guardar_preferencias">Guardar Preferencias</string>
+    <string name="titulo_preferencias">Preferencias</string>
+    <string name="item_menu">Item Menu</string>
 </resources>

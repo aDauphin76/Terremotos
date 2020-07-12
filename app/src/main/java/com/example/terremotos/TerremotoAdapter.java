@@ -106,6 +106,7 @@ public class TerremotoAdapter extends ArrayAdapter<Terremoto>  {
 
     }
 
+
     private int getColorMagnitud(double magnitud) {
         int colorIDMagnitud = 0;
         int magnitudFloor = (int) Math.floor(magnitud);
